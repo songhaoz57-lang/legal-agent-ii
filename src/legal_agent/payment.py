@@ -94,3 +94,9 @@ def handle_checkout_completed(session_data: dict) -> None:
     if session_data.get("customer_details"):
         email = session_data["customer_details"].get("email", "")
     mark_paid(session_id, email)
+    # Also mark user as paid in auth system
+    try:
+        from legal_agent.auth import mark_user_paid
+        mark_user_paid(email, session_id)
+    except Exception:
+        pass

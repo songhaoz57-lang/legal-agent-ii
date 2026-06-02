@@ -13,6 +13,10 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from legal_agent.agent import ask_legal_agent, build_agent
 from legal_agent.config import get_settings
 from legal_agent.contract_review import review_contract, format_review
+from legal_agent.auth import (
+    create_user, authenticate, get_user_from_request,
+    create_token, mark_user_paid, is_user_paid, get_user_by_email,
+)
 from legal_agent.contract_generator import list_templates, generate_contract
 from legal_agent.payment import (
     create_checkout_session,
@@ -134,6 +138,43 @@ async def stripe_webhook(request: Request):
         return {"received": True}
     raise HTTPException(status_code=400, detail="Invalid signature")
 
+
+# ── Auth routes ──
+
+@app.post("/api/auth/register")
+async def api_register(data: dict):
+    email = data.get("email", "").strip()
+    password = data.get("password", "").strip()
+    name = data.get("name", "").strip()
+    if not email or not password:
+        raise HTTPException(status_code=400, detail="Email and password required")
+    if len(password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+    user = create_user(email, password, name)
+    if user is None:
+        raise HTTPException(status_code=409, detail="Email already registered")
+    token = create_token(user["id"], user["email"])
+    return {"token": token, "user": {"id": user["id"], "email": user["email"], "name": user["name"], "is_paid": bool(user["is_paid"])}}
+
+
+@app.post("/api/auth/login")
+async def api_login(data: dict):
+    email = data.get("email", "").strip()
+    password = data.get("password", "").strip()
+    user = authenticate(email, password)
+    if user is None:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    token = create_token(user["id"], user["email"])
+    return {"token": token, "user": {"id": user["id"], "email": user["email"], "name": user["name"], "is_paid": bool(user["is_paid"])}}
+
+
+@app.get("/api/auth/me")
+async def api_me(request: Request):
+    auth = request.headers.get("authorization", "")
+    user = get_user_from_request(auth)
+    if user is None:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return {"user": {"id": user["id"], "email": user["email"], "name": user["name"], "is_paid": bool(user["is_paid"])}}
 
 # ── Contract generator ──
 
