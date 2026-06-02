@@ -101,6 +101,24 @@ input[type=file]{display:none}
 .modal-close:hover{background:#f3f4f6;color:#374151}
 .modal-body{padding:20px;overflow-y:auto;flex:1;font-size:13px;line-height:1.8;white-space:pre-wrap;color:#374151}
 @media(max-width:860px){main{grid-template-columns:1fr}.right{position:static}}
+
+/* ── paywall ── */
+.pay-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(10,10,30,.88);z-index:300;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.pay-overlay.hidden{display:none}
+.pay-card{background:#fff;border-radius:16px;width:90%;max-width:420px;padding:36px 28px 28px;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.3);animation:modalIn .3s ease}
+.pay-icon{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:16px}
+.pay-card h2{font-size:18px;font-weight:700;margin-bottom:6px;color:#1a1a2e}
+.pay-card .pay-desc{font-size:12px;color:#6b7280;margin-bottom:20px;line-height:1.6}
+.pay-price{font-size:36px;font-weight:800;color:#1a1a2e;margin-bottom:4px}
+.pay-price span{font-size:14px;font-weight:400;color:#9ca3af}
+.pay-features{text-align:left;margin-bottom:20px;display:flex;flex-direction:column;gap:8px}
+.pay-features .pf{display:flex;align-items:center;gap:8px;font-size:12px;color:#374151}
+.pay-features .pf .chk{color:#10b981;font-weight:700;font-size:14px}
+.pay-btn{width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.pay-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(79,70,229,.4)}
+.pay-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.pay-footer{font-size:10px;color:#9ca3af;margin-top:14px}
+.pay-footer a{color:#4f46e5;text-decoration:none}
 </style>
 </head>
 <body>
@@ -157,6 +175,42 @@ input[type=file]{display:none}
   </div>
 </div>
 <script>
+
+// ── payment ──
+var po=document.getElementById("payOverlay"),pb=document.getElementById("payBtn"),paidSession=localStorage.getItem("ii_paid_session");
+
+async function checkAccess(){
+  if(!paidSession) return false;
+  try{var r=await fetch("/api/payment/check/"+encodeURIComponent(paidSession));var d=await r.json();return d.paid}catch(e){return false}
+}
+async function initPaywall(){
+  var paid=await checkAccess();
+  if(paid){ po.classList.add("hidden"); return }
+  // check URL for session_id return from Stripe
+  var sp=new URLSearchParams(location.search);
+  var sid=sp.get("session_id");
+  if(sid){
+    pb.textContent="验证支付中..."; pb.disabled=true;
+    try{
+      var r=await fetch("/api/payment/verify/"+encodeURIComponent(sid),{method:"POST"});
+      var d=await r.json();
+      if(d.paid){ localStorage.setItem("ii_paid_session",sid); paidSession=sid; po.classList.add("hidden"); history.replaceState({},"",location.pathname); return }
+    }catch(e){}
+    pb.textContent="&#128179; 立即订阅"; pb.disabled=false;
+  }
+}
+async function startPayment(){
+  pb.textContent="正在连接..."; pb.disabled=true;
+  try{
+    var r=await fetch("/api/payment/create-checkout",{method:"POST"});
+    var d=await r.json();
+    if(d.url) location.href=d.url;
+    else alert("支付服务暂不可用");
+  }catch(e){ alert("支付服务暂不可用: "+e.message) }
+  pb.textContent="&#128179; 立即订阅"; pb.disabled=false;
+}
+initPaywall();
+
 // ── state ──
 var dz=document.getElementById("dropZone"),
     fi=document.getElementById("fileInput"),

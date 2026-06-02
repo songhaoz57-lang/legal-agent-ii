@@ -9,6 +9,14 @@
         sync: false
       - key: OPENAI_BASE_URL
         sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_PRICE_ID
+        sync: false
+      - key: SITE_URL
+        value: https://legal-agent-ii.onrender.com
       - key: LEGAL_AGENT_MODEL
         value: gpt-5.2
       - key: LEGAL_AGENT_JURISDICTION
