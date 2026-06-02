@@ -6,14 +6,13 @@ import tempfile
 from pathlib import Path
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, File, UploadFile, Form, Request, HTTPException
+from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from legal_agent.agent import ask_legal_agent, build_agent
 from legal_agent.config import get_settings
 from legal_agent.contract_review import review_contract, format_review
-from legal_agent.payment import create_checkout_session, verify_stripe_session, verify_webhook_signature, handle_checkout_completed, is_session_paid
 import os
 
 load_dotenv(override=True)
@@ -92,44 +91,15 @@ async def index():
 
 
 
-# ── Stripe payment routes ──
 
-@app.post("/api/payment/create-checkout")
-async def api_create_checkout():
-    result = create_checkout_session()
-    if result is None:
-        raise HTTPException(status_code=500, detail="Stripe not configured")
-    if "error" in result:
-        raise HTTPException(status_code=500, detail=result["error"])
-    return result
-
-
-@app.post("/api/payment/verify/{session_id}")
-async def api_verify_payment(session_id: str):
-    if is_session_paid(session_id):
-        return {"paid": True}
-    result = verify_stripe_session(session_id)
-    if result is None:
-        raise HTTPException(status_code=400, detail="Invalid session")
-    return result
-
-
-@app.get("/api/payment/check/{session_id}")
-async def api_check_access(session_id: str):
-    return {"paid": is_session_paid(session_id)}
-
-
-@app.post("/api/stripe-webhook")
-async def stripe_webhook(request: Request):
-    payload = await request.body()
-    sig = request.headers.get("stripe-signature", "")
-    if verify_webhook_signature(payload, sig):
-        import json
-        event = json.loads(payload)
-        if event.get("type") == "checkout.session.completed":
-            handle_checkout_completed(event.get("data", {}).get("object", {}))
-        return {"received": True}
-    raise HTTPException(status_code=400, detail="Invalid signature")
+@app.get("/api/debug-env")
+async def api_debug_env():
+    import os
+    return {
+        "openai_key_set": bool(os.environ.get("OPENAI_API_KEY")),
+        "openai_base_url": os.environ.get("OPENAI_BASE_URL", "NOT SET"),
+        "model": os.environ.get("LEGAL_AGENT_MODEL", "NOT SET"),
+    }
 
 if __name__ == '__main__':
     import uvicorn
