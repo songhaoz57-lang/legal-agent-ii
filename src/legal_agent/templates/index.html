@@ -128,6 +128,49 @@ input[type=file]{display:none}
 .gen-actions .btn-reset{background:#f3f4f6;color:#6b7280}
 .gen-actions .btn-reset:hover{background:#e5e7eb}
 
+
+/* auth */
+.auth-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(10,10,30,.88);z-index:300;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.auth-overlay.hidden{display:none}
+.auth-card{background:#fff;border-radius:16px;width:90%;max-width:400px;padding:32px 28px 28px;box-shadow:0 24px 64px rgba(0,0,0,.3);animation:modalIn .3s ease}
+.auth-icon{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:12px}
+.auth-card h2{font-size:17px;font-weight:700;margin-bottom:16px;color:#1a1a2e}
+.auth-field{margin-bottom:12px}
+.auth-field label{font-size:11px;font-weight:600;color:#374151;display:block;margin-bottom:4px}
+.auth-field input{width:100%;padding:10px 12px;border:1px solid #e4e6ea;border-radius:8px;font-size:13px;outline:none;background:#f9fafb}
+.auth-field input:focus{border-color:#4f46e5;background:#fff}
+.auth-btn{width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;font-size:13px;font-weight:600;cursor:pointer;margin-top:4px}
+.auth-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(79,70,229,.4)}
+.auth-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.auth-switch{text-align:center;font-size:11px;color:#9ca3af;margin-top:14px}
+.auth-switch a{color:#4f46e5;cursor:pointer;text-decoration:none;font-weight:600}
+.auth-err{background:#fef2f2;color:#ef4444;font-size:11px;padding:8px 12px;border-radius:8px;margin-bottom:12px;display:none}
+.auth-err.show{display:block}
+.user-menu{display:flex;align-items:center;gap:10px;font-size:12px;color:rgba(255,255,255,.8)}
+.user-menu button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:5px 12px;border-radius:6px;font-size:11px;cursor:pointer}
+.user-menu button:hover{background:rgba(255,255,255,.2)}
+
+
+/* auth */
+.auth-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(10,10,30,.88);z-index:300;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.auth-overlay.hidden{display:none}
+.auth-card{background:#fff;border-radius:16px;width:90%;max-width:400px;padding:32px 28px 28px;box-shadow:0 24px 64px rgba(0,0,0,.3);animation:modalIn .3s ease}
+.auth-icon{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:12px}
+.auth-card h2{font-size:17px;font-weight:700;margin-bottom:16px;color:#1a1a2e}
+.auth-field{margin-bottom:12px}
+.auth-field label{font-size:11px;font-weight:600;color:#374151;display:block;margin-bottom:4px}
+.auth-field input{width:100%;padding:10px 12px;border:1px solid #e4e6ea;border-radius:8px;font-size:13px;outline:none;background:#f9fafb}
+.auth-field input:focus{border-color:#4f46e5;background:#fff}
+.auth-btn{width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;font-size:13px;font-weight:600;cursor:pointer;margin-top:4px}
+.auth-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(79,70,229,.4)}
+.auth-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.auth-switch{text-align:center;font-size:11px;color:#9ca3af;margin-top:14px}
+.auth-switch a{color:#4f46e5;cursor:pointer;text-decoration:none;font-weight:600}
+.auth-err{background:#fef2f2;color:#ef4444;font-size:11px;padding:8px 12px;border-radius:8px;margin-bottom:12px;display:none}
+.auth-err.show{display:block}
+.user-menu{display:flex;align-items:center;gap:10px;font-size:12px;color:rgba(255,255,255,.8)}
+.user-menu button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:5px 12px;border-radius:6px;font-size:11px;cursor:pointer}
+.user-menu button:hover{background:rgba(255,255,255,.2)}
 </style>
 </head>
 <body>
@@ -488,15 +531,46 @@ function resetBuilder(){
   loadTemplates();
 }
 
-// ── init ──
-(async function loadSources(){
-  try{
-    var r=await fetch("/api/sources");
-    var d=await r.json();
-    sources=d.sources||[];
-    renderSrc(sources);
-  }catch(e){
-    sl.innerHTML='<div class=empty>知识库加载失败</div>';
-  }
-})();
+// ?? auth ??
+var ao=document.getElementById("authOverlay"),ab=document.getElementById("authBtn"),ae=document.getElementById("authErr"),at=document.getElementById("authTitle"),um=document.getElementById("userMenu"),ue=document.getElementById("userEmail"),sd=document.getElementById("statusDot"),isRegister=false,currentUser=null,authToken=localStorage.getItem("ii_token");
+function toggleAuth(){isRegister=!isRegister;at.textContent=isRegister?"?? ii":"?? ii";ab.textContent=isRegister?"??":"??";document.getElementById("nameField").style.display=isRegister?"block":"none";document.getElementById("authSwitchText").textContent=isRegister?"?????":"?????";document.getElementById("authSwitchLink").textContent=isRegister?"??":"??";ae.classList.remove("show");ae.textContent="";}
+async function handleAuth(){var email=document.getElementById("authEmail").value.trim(),pw=document.getElementById("authPw").value.trim();if(!email||!pw){ae.textContent="????????";ae.classList.add("show");return}ab.disabled=true;ab.textContent="???...";ae.classList.remove("show");try{var path=isRegister?"/api/auth/register":"/api/auth/login",data={email:email,password:pw};if(isRegister)data.name=document.getElementById("regName").value.trim();var r=await fetch(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});if(!r.ok){var e=await r.json();throw new Error(e.detail||"Error")}var d=await r.json();authToken=d.token;localStorage.setItem("ii_token",authToken);currentUser=d.user;ue.textContent=currentUser.email;um.style.display="flex";sd.style.display="none";ao.classList.add("hidden");if(!currentUser.is_paid)document.getElementById("payOverlay").classList.remove("hidden")}catch(e){ae.textContent=e.message;ae.classList.add("show")}ab.disabled=false;ab.textContent=isRegister?"??":"??"}
+async function checkAuth(){if(!authToken)return false;try{var r=await fetch("/api/auth/me",{headers:{"Authorization":"Bearer "+authToken}});if(!r.ok){authToken=null;localStorage.removeItem("ii_token");return false}var d=await r.json();currentUser=d.user;ue.textContent=currentUser.email;um.style.display="flex";sd.style.display="none";ao.classList.add("hidden");if(!currentUser.is_paid)document.getElementById("payOverlay").classList.remove("hidden");return true}catch(e){authToken=null;return false}}
+async function startPayment(){var pb2=document.getElementById("payBtn");pb2.textContent="???...";pb2.disabled=true;try{var r=await fetch("/api/payment/create-checkout",{method:"POST"});var d=await r.json();if(d.url)location.href=d.url;else alert("????????")}catch(e){alert("????????")}pb2.textContent="????";pb2.disabled=false}
+function doLogout(){authToken=null;currentUser=null;localStorage.removeItem("ii_token");um.style.display="none";sd.style.display="flex";ao.classList.remove("hidden");document.getElementById("payOverlay").classList.add("hidden")}
+// ?? init ??
+checkAuth().then(function(ok){if(!ok)ao.classList.remove("hidden")});
+(async function loadSources(){try{var r=await fetch("/api/sources");var d=await r.json();sources=d.sources||[];renderSrc(sources)}catch(e){sl.innerHTML='<div class=empty>???????</div>'}})();
 </script>
+
+<div class=auth-overlay id=authOverlay>
+  <div class=auth-card>
+    <div class=auth-icon>II</div>
+    <h2 id=authTitle>?? ii</h2>
+    <div class=auth-err id=authErr></div>
+    <div class=auth-field id=nameField style=display:none><label>??</label><input id=regName placeholder="????"></div>
+    <div class=auth-field><label>??</label><input type=email id=authEmail placeholder="you@example.com"></div>
+    <div class=auth-field><label>??</label><input type=password id=authPw placeholder="??6?"></div>
+    <button class=auth-btn id=authBtn onclick=handleAuth()>??</button>
+    <div class=auth-switch><span id=authSwitchText>?????</span> <a id=authSwitchLink onclick=toggleAuth()>??</a></div>
+  </div>
+</div>
+<div class=auth-overlay hidden id=payOverlay>
+  <div class=auth-card style=text-align:center>
+    <div class=auth-icon>II</div>
+    <h2>ii ???</h2>
+    <p style=font-size:12px;color:#6b7280;margin-bottom:16px>????????? | AI???? | ????? | ??????</p>
+    <div style=font-size:36px;font-weight:800;color:#1a1a2e;margin-bottom:4px>?29<span style=font-size:14px;font-weight:400;color:#9ca3af>/?</span></div>
+    <div style=text-align:left;margin:16px 0;font-size:11px;color:#374151;line-height:2>
+      <div>&#10003; ?????????</div>
+      <div>&#10003; AI ??????</div>
+      <div>&#10003; 300+ ???????</div>
+      <div>&#10003; ??????</div>
+    </div>
+    <button class=auth-btn id=payBtn onclick=startPayment()>????</button>
+    <p style=font-size:10px;color:#9ca3af;margin-top:10px>????? Stripe ?? | <a onclick=doLogout() style=color:#4f46e5;cursor:pointer>??</a></p>
+  </div>
+</div>
+
+</body>
+</html>
