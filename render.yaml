@@ -1,0 +1,17 @@
+﻿services:
+  - type: web
+    name: legal-agent-ii
+    runtime: python
+    buildCommand: pip install -r requirements.txt && pip install -e .
+    startCommand: uvicorn legal_agent.web:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_BASE_URL
+        sync: false
+      - key: LEGAL_AGENT_MODEL
+        value: gpt-5.2
+      - key: LEGAL_AGENT_JURISDICTION
+        value: China
+      - key: LEGAL_AGENT_SOURCE_DIR
+        value: data/legal_sources
