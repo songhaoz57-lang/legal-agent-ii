@@ -154,7 +154,7 @@ async def api_register(data: dict):
     if user is None:
         raise HTTPException(status_code=409, detail="Email already registered")
     token = create_token(user["id"], user["email"])
-    return {"token": token, "user": {"id": user["id"], "email": user["email"], "name": user["name"], "is_paid": bool(user["is_paid"])}}
+    return {"token": token, "user": {"id": user["id"], "email": user["email"], "name": user["name"], "is_paid": true}}
 
 
 @app.post("/api/auth/login")
@@ -165,7 +165,7 @@ async def api_login(data: dict):
     if user is None:
         raise HTTPException(status_code=401, detail="Invalid email or password")
     token = create_token(user["id"], user["email"])
-    return {"token": token, "user": {"id": user["id"], "email": user["email"], "name": user["name"], "is_paid": bool(user["is_paid"])}}
+    return {"token": token, "user": {"id": user["id"], "email": user["email"], "name": user["name"], "is_paid": true}}
 
 
 @app.get("/api/auth/me")
@@ -174,7 +174,7 @@ async def api_me(request: Request):
     user = get_user_from_request(auth)
     if user is None:
         raise HTTPException(status_code=401, detail="Not authenticated")
-    return {"user": {"id": user["id"], "email": user["email"], "name": user["name"], "is_paid": bool(user["is_paid"])}}
+    return {"user": {"id": user["id"], "email": user["email"], "name": user["name"], "is_paid": true}}
 
 # ── Contract generator ──
 
