@@ -102,23 +102,32 @@ input[type=file]{display:none}
 .modal-body{padding:20px;overflow-y:auto;flex:1;font-size:13px;line-height:1.8;white-space:pre-wrap;color:#374151}
 @media(max-width:860px){main{grid-template-columns:1fr}.right{position:static}}
 
-/* ── paywall ── */
-.pay-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(10,10,30,.88);z-index:300;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
-.pay-overlay.hidden{display:none}
-.pay-card{background:#fff;border-radius:16px;width:90%;max-width:420px;padding:36px 28px 28px;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.3);animation:modalIn .3s ease}
-.pay-icon{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:16px}
-.pay-card h2{font-size:18px;font-weight:700;margin-bottom:6px;color:#1a1a2e}
-.pay-card .pay-desc{font-size:12px;color:#6b7280;margin-bottom:20px;line-height:1.6}
-.pay-price{font-size:36px;font-weight:800;color:#1a1a2e;margin-bottom:4px}
-.pay-price span{font-size:14px;font-weight:400;color:#9ca3af}
-.pay-features{text-align:left;margin-bottom:20px;display:flex;flex-direction:column;gap:8px}
-.pay-features .pf{display:flex;align-items:center;gap:8px;font-size:12px;color:#374151}
-.pay-features .pf .chk{color:#10b981;font-weight:700;font-size:14px}
-.pay-btn{width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
-.pay-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(79,70,229,.4)}
-.pay-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
-.pay-footer{font-size:10px;color:#9ca3af;margin-top:14px}
-.pay-footer a{color:#4f46e5;text-decoration:none}
+/* ── contract builder ── */
+.mode-tabs{display:flex;gap:0;margin-bottom:16px;background:#f3f4f6;border-radius:10px;padding:3px}
+.mode-tabs button{flex:1;padding:10px;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;background:transparent;color:#6b7280;transition:all .15s}
+.mode-tabs button.active{background:#fff;color:#1a1a2e;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.tpl-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.tpl-card{border:2px solid #e4e6ea;border-radius:10px;padding:14px;cursor:pointer;transition:all .15s;text-align:center}
+.tpl-card:hover{border-color:#4f46e5;background:#eef2ff}
+.tpl-card.selected{border-color:#4f46e5;background:#eef2ff;box-shadow:0 0 0 2px #4f46e5}
+.tpl-card .tpl-icon{font-size:28px;margin-bottom:6px;display:block}
+.tpl-card .tpl-name{font-size:12px;font-weight:600;color:#1a1a2e}
+.tpl-card .tpl-desc{font-size:10px;color:#9ca3af;margin-top:2px}
+.gen-form{display:flex;flex-direction:column;gap:10px}
+.gen-form label{font-size:11px;font-weight:600;color:#374151}
+.gen-form input,.gen-form textarea{width:100%;padding:10px 12px;border:1px solid #e4e6ea;border-radius:8px;font-size:12px;font-family:inherit;outline:none;background:#f9fafb;transition:border-color .15s;resize:vertical}
+.gen-form input:focus,.gen-form textarea:focus{border-color:#4f46e5;background:#fff}
+.gen-form textarea{min-height:80px}
+.gen-preview{background:#f9fafb;border:1px solid #e4e6ea;border-radius:10px;padding:16px;font-size:12px;line-height:1.8;white-space:pre-wrap;max-height:500px;overflow-y:auto;font-family:"SF Mono",Consolas,monospace;color:#374151}
+.gen-actions{display:flex;gap:8px;margin-top:12px}
+.gen-actions button{flex:1;padding:10px;border:none;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.gen-actions .btn-gen{background:#4f46e5;color:#fff}
+.gen-actions .btn-gen:hover{background:#3730a3}
+.gen-actions .btn-dl{background:#ecfdf5;color:#059669;border:1px solid #a7f3d0}
+.gen-actions .btn-dl:hover{background:#d1fae5}
+.gen-actions .btn-reset{background:#f3f4f6;color:#6b7280}
+.gen-actions .btn-reset:hover{background:#e5e7eb}
+
 </style>
 </head>
 <body>
@@ -128,6 +137,23 @@ input[type=file]{display:none}
 </header>
 <main>
 <div class=left>
+  
+  <div class="card hidden" id=builderCard>
+    <h2>&#9997; 合同起草</h2>
+    <p style="font-size:11px;color:#9ca3af;margin-bottom:14px">选择模板，填写信息，一键生成合同</p>
+    <div class=tpl-grid id=tplGrid></div>
+    <div class="gen-form hidden" id=genForm></div>
+    <div class="gen-actions hidden" id=genActions>
+      <button class=btn-gen onclick=generateContract()>生成合同</button>
+      <button class=btn-reset onclick=resetBuilder()>重置</button>
+    </div>
+    <div class="gen-preview hidden" id=genPreview></div>
+    <div class="gen-actions hidden" id=dlActions>
+      <button class=btn-dl onclick=downloadContract()>&#128190; 下载 .txt</button>
+      <button class=btn-reset onclick=resetBuilder()>重新起草</button>
+    </div>
+  </div>
+
   <div class=card id=uploadCard>
     <h2>&#128196; 上传合同文件</h2>
     <div class=drop-zone id=dropZone>
@@ -175,42 +201,6 @@ input[type=file]{display:none}
   </div>
 </div>
 <script>
-
-// ── payment ──
-var po=document.getElementById("payOverlay"),pb=document.getElementById("payBtn"),paidSession=localStorage.getItem("ii_paid_session");
-
-async function checkAccess(){
-  if(!paidSession) return false;
-  try{var r=await fetch("/api/payment/check/"+encodeURIComponent(paidSession));var d=await r.json();return d.paid}catch(e){return false}
-}
-async function initPaywall(){
-  var paid=await checkAccess();
-  if(paid){ po.classList.add("hidden"); return }
-  // check URL for session_id return from Stripe
-  var sp=new URLSearchParams(location.search);
-  var sid=sp.get("session_id");
-  if(sid){
-    pb.textContent="验证支付中..."; pb.disabled=true;
-    try{
-      var r=await fetch("/api/payment/verify/"+encodeURIComponent(sid),{method:"POST"});
-      var d=await r.json();
-      if(d.paid){ localStorage.setItem("ii_paid_session",sid); paidSession=sid; po.classList.add("hidden"); history.replaceState({},"",location.pathname); return }
-    }catch(e){}
-    pb.textContent="&#128179; 立即订阅"; pb.disabled=false;
-  }
-}
-async function startPayment(){
-  pb.textContent="正在连接..."; pb.disabled=true;
-  try{
-    var r=await fetch("/api/payment/create-checkout",{method:"POST"});
-    var d=await r.json();
-    if(d.url) location.href=d.url;
-    else alert("支付服务暂不可用");
-  }catch(e){ alert("支付服务暂不可用: "+e.message) }
-  pb.textContent="&#128179; 立即订阅"; pb.disabled=false;
-}
-initPaywall();
-
 // ── state ──
 var dz=document.getElementById("dropZone"),
     fi=document.getElementById("fileInput"),
@@ -405,6 +395,93 @@ document.querySelectorAll(".tab-btn").forEach(function(btn){
     document.getElementById("panel"+(btn.dataset.panel==="risks"?"Risks":"Missing")).classList.add("active");
   };
 });
+
+
+// ── contract builder ──
+var tg=document.getElementById("tplGrid"),gf=document.getElementById("genForm"),
+    ga=document.getElementById("genActions"),gp=document.getElementById("genPreview"),
+    da=document.getElementById("dlActions"),bc=document.getElementById("builderCard"),
+    templates=[],selectedTpl=null,genContent="",genName="";
+
+// Mode switching
+document.querySelectorAll("#modeTabs button").forEach(function(btn){
+  btn.onclick=function(){
+    document.querySelectorAll("#modeTabs button").forEach(function(b){b.classList.remove("active")});
+    btn.classList.add("active");
+    if(btn.dataset.mode==="draft"){uc.classList.add("hidden");rc.classList.add("hidden");bc.classList.remove("hidden");loadTemplates()}
+    else{bc.classList.add("hidden");uc.classList.remove("hidden")}
+  };
+});
+
+async function loadTemplates(){
+  try{
+    var r=await fetch("/api/templates");var d=await r.json();
+    templates=d.templates||[];
+    var html="";
+    templates.forEach(function(t){
+      html+='<div class=tpl-card data-id="'+t.id+'" onclick=selectTemplate("'+t.id+'")><span class=tpl-icon>&#128196;</span><div class=tpl-name>'+esc(t.name)+'</div><div class=tpl-desc>'+esc(t.description)+'</div></div>';
+    });
+    tg.innerHTML=html;
+  }catch(e){tg.innerHTML='<div class=empty>加载模板失败</div>'}
+}
+
+function selectTemplate(id){
+  selectedTpl=templates.find(function(t){return t.id===id});
+  document.querySelectorAll(".tpl-card").forEach(function(c){c.classList.remove("selected")});
+  var card=tg.querySelector('[data-id="'+id+'"]');if(card)card.classList.add("selected");
+  renderForm();
+}
+
+function renderForm(){
+  if(!selectedTpl)return;
+  var html="";
+  selectedTpl.fields.forEach(function(f){
+    var tag=f.type==="textarea"?'<textarea id=f_'+f.key+' placeholder="'+escAttr(f.placeholder||'')+'"></textarea>':'<input type=text id=f_'+f.key+' placeholder="'+escAttr(f.placeholder||'')+'">';
+    html+='<label>'+esc(f.label)+'</label>'+tag;
+  });
+  html+='<label>签订地点</label><input type=text id=f_place placeholder="例如：北京市">';
+  gf.innerHTML=html;
+  gf.classList.remove("hidden");
+  ga.classList.remove("hidden");
+  gp.classList.add("hidden");
+  da.classList.add("hidden");
+}
+
+async function generateContract(){
+  if(!selectedTpl)return;
+  var fields={};
+  selectedTpl.fields.forEach(function(f){
+    fields[f.key]=document.getElementById("f_"+f.key).value;
+  });
+  fields.place=document.getElementById("f_place").value;
+  try{
+    var r=await fetch("/api/contract/generate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({template_id:selectedTpl.id,fields:fields})});
+    var d=await r.json();
+    genContent=d.content;genName=d.name;
+    gp.textContent=genContent;gp.classList.remove("hidden");
+    da.classList.remove("hidden");
+    ga.classList.add("hidden");
+    gf.classList.add("hidden");
+    gp.scrollIntoView({behavior:"smooth"});
+  }catch(e){alert("生成失败: "+e.message)}
+}
+
+function downloadContract(){
+  if(!genContent)return;
+  var blob=new Blob([genContent],{type:"text/plain;charset=utf-8"});
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download=(genName||"contract")+".txt";a.click();
+}
+
+function resetBuilder(){
+  selectedTpl=null;genContent="";genName="";
+  document.querySelectorAll(".tpl-card").forEach(function(c){c.classList.remove("selected")});
+  gf.classList.add("hidden");gf.innerHTML="";
+  ga.classList.add("hidden");
+  gp.classList.add("hidden");gp.textContent="";
+  da.classList.add("hidden");
+  loadTemplates();
+}
 
 // ── init ──
 (async function loadSources(){

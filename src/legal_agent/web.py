@@ -13,6 +13,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from legal_agent.agent import ask_legal_agent, build_agent
 from legal_agent.config import get_settings
 from legal_agent.contract_review import review_contract, format_review
+from legal_agent.contract_generator import list_templates, generate_contract
 from legal_agent.payment import (
     create_checkout_session,
     verify_stripe_session,
@@ -133,6 +134,22 @@ async def stripe_webhook(request: Request):
         return {"received": True}
     raise HTTPException(status_code=400, detail="Invalid signature")
 
+
+# ── Contract generator ──
+
+@app.get("/api/templates")
+async def api_templates():
+    return {"templates": list_templates()}
+
+
+@app.post("/api/contract/generate")
+async def api_generate(data: dict):
+    template_id = data.get("template_id", "")
+    fields = data.get("fields", {})
+    result = generate_contract(template_id, fields)
+    if "error" in result:
+        raise HTTPException(status_code=404, detail=result["error"])
+    return result
 
 @app.get("/api/debug-env")
 async def api_debug_env():
