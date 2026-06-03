@@ -1,0 +1,42 @@
+﻿<!-- AI 法律咨询 -->
+<view class="page">
+  <!-- 聊天记录 -->
+  <scroll-view class="chat-scroll" scroll-y scroll-into-view="{{scrollTo}}" scroll-with-animation>
+    <view wx:if="{{messages.length === 0}}" class="empty-state">
+      <view class="icon">💬</view>
+      <view class="text">输入法律问题，AI 为您解答</view>
+      <view class="hints">
+        <view class="hint-item" bindtap="quickAsk" data-q="劳动合同到期不续签有什么补偿？">劳动合同到期不续签有什么补偿？</view>
+        <view class="hint-item" bindtap="quickAsk" data-q="如何起草一份有效的保密协议？">如何起草一份有效的保密协议？</view>
+        <view class="hint-item" bindtap="quickAsk" data-q="公司单方面解除合同需要什么条件？">公司单方面解除合同需要什么条件？</view>
+      </view>
+    </view>
+
+    <view class="msg-list">
+      <block wx:for="{{messages}}" wx:key="id">
+        <!-- AI 消息 -->
+        <view class="msg-ai" wx:if="{{item.role === 'ai'}}">
+          <view class="msg-avatar">II</view>
+          <view class="msg-bubble ai-bubble">
+            <text>{{item.content}}</text>
+          </view>
+        </view>
+        <!-- 用户消息 -->
+        <view class="msg-user" wx:else>
+          <view class="msg-bubble user-bubble">
+            <text>{{item.content}}</text>
+          </view>
+        </view>
+      </block>
+      <view id="msg-bottom"></view>
+    </view>
+  </scroll-view>
+
+  <!-- 输入区域 -->
+  <view class="chat-input-bar">
+    <input class="chat-input" placeholder="输入您的问题..." value="{{inputText}}" bindinput="onInput" bindconfirm="sendMsg" confirm-type="send" />
+    <button class="send-btn" bindtap="sendMsg" disabled="{{!inputText || loading}}">
+      {{loading ? '...' : '发送'}}
+    </button>
+  </view>
+</view>

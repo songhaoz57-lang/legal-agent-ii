@@ -1,0 +1,30 @@
+﻿<!-- 生成合同 -->
+<view class="page">
+  <view class="card">
+    <view class="tpl-name">📋 {{templateName}}</view>
+    <view class="tpl-hint">请填写以下信息生成合同</view>
+  </view>
+
+  <!-- 动态表单 -->
+  <view class="card form-card">
+    <view class="form-group" wx:for="{{fields}}" wx:key="key">
+      <view class="form-label">{{item.label}}</view>
+      <input class="form-input" placeholder="请输入{{item.label}}" value="{{item.value}}" data-key="{{item.key}}" bindinput="onFieldChange" />
+    </view>
+
+    <button class="btn-primary" bindtap="generate" disabled="{{generating}}">
+      {{generating ? '生成中...' : '生成合同'}}
+    </button>
+  </view>
+
+  <!-- 生成结果 -->
+  <view class="card" wx:if="{{resultContent}}">
+    <view class="result-header">
+      <text class="result-title">📝 生成结果</text>
+      <button class="btn-secondary copy-btn" bindtap="copyContent">复制全文</button>
+    </view>
+    <view class="result-body">
+      <text user-select="true">{{resultContent}}</text>
+    </view>
+  </view>
+</view>

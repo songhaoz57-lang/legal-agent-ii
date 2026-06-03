@@ -1,0 +1,50 @@
+﻿{
+  "pages": [
+    "pages/index/index",
+    "pages/ask/ask",
+    "pages/sources/sources",
+    "pages/source-detail/source-detail",
+    "pages/templates/templates",
+    "pages/generate/generate"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#1a1a2e",
+    "navigationBarTitleText": "ii 法律助手",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f0f2f5"
+  },
+  "tabBar": {
+    "color": "#9ca3af",
+    "selectedColor": "#4f46e5",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "合同审查",
+        "iconPath": "images/review.png",
+        "selectedIconPath": "images/review-active.png"
+      },
+      {
+        "pagePath": "pages/ask/ask",
+        "text": "AI咨询",
+        "iconPath": "images/ask.png",
+        "selectedIconPath": "images/ask-active.png"
+      },
+      {
+        "pagePath": "pages/sources/sources",
+        "text": "知识库",
+        "iconPath": "images/book.png",
+        "selectedIconPath": "images/book-active.png"
+      },
+      {
+        "pagePath": "pages/templates/templates",
+        "text": "合同生成",
+        "iconPath": "images/file.png",
+        "selectedIconPath": "images/file-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}
