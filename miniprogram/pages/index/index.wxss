@@ -1,4 +1,4 @@
-﻿.upload-card {
+.upload-card {
   text-align: center;
   padding: 60rpx 32rpx;
   border: 4rpx dashed #d1d5db;

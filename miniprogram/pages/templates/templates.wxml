@@ -1,4 +1,4 @@
-﻿<!-- 合同模板 -->
+<!-- 合同模板 -->
 <view class="page">
   <view wx:if="{{templates.length === 0}}" class="empty-state">
     <view class="icon">📋</view>

@@ -1,4 +1,4 @@
-﻿<!-- 合同审查 -->
+<!-- 合同审查 -->
 <view class="page">
   <!-- 上传区域 -->
   <view class="card upload-card" bindtap="chooseFile">

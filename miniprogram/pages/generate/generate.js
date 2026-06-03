@@ -1,4 +1,4 @@
-﻿const app = getApp()
+const app = getApp()
 
 // 各模板所需字段
 const TEMPLATE_FIELDS = {

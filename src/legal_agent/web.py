@@ -84,7 +84,16 @@ async def api_review(file: UploadFile = File(...)):
 
 
 @app.post("/api/ask")
-async def api_ask(question: str = Form(...), jurisdiction: str = Form("cn")):
+async def api_ask(request: Request, question: str = Form(None), jurisdiction: str = Form("cn")):
+    if question is None:
+        try:
+            body = await request.json()
+            question = body.get("question", "")
+            jurisdiction = body.get("jurisdiction", "cn")
+        except:
+            question = ""
+    if not question:
+        raise HTTPException(status_code=422, detail="question is required")
     answer = await ask_legal_agent(question=question, jurisdiction=jurisdiction)
     return {"answer": answer}
 

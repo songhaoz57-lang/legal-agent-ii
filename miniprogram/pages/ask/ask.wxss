@@ -1,4 +1,4 @@
-﻿.chat-scroll {
+.chat-scroll {
   height: calc(100vh - 120rpx);
   padding: 16rpx 24rpx;
 }

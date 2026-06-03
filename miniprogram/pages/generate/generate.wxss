@@ -1,4 +1,4 @@
-﻿.tpl-name { font-size: 34rpx; font-weight: 600; }
+.tpl-name { font-size: 34rpx; font-weight: 600; }
 .tpl-hint { font-size: 26rpx; color: #9ca3af; margin-top: 8rpx; }
 
 .form-card { margin-top: 0; }

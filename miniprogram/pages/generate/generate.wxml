@@ -1,4 +1,4 @@
-﻿<!-- 生成合同 -->
+<!-- 生成合同 -->
 <view class="page">
   <view class="card">
     <view class="tpl-name">📋 {{templateName}}</view>

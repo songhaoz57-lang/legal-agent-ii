@@ -1,4 +1,4 @@
-﻿const app = getApp()
+const app = getApp()
 
 Page({
   data: {
@@ -19,8 +19,8 @@ Page({
       const data = await app.request("/api/sources")
       const sources = (data.sources || []).map(s => ({
         ...s,
-        title: s.title || s.path || "未知文件",
-        category: s.category || this.guessCategory(s.path || "")
+        title: s.heading || s.title || s.file || s.path || "未知文件",
+        category: s.category || this.guessCategory(s.file || s.path || "")
       }))
       const cats = [...new Set(sources.map(s => s.category).filter(Boolean))]
       this.setData({ sources, filteredSources: sources, categories: cats })
@@ -62,7 +62,7 @@ Page({
   openDetail(e) {
     const { path, title } = e.currentTarget.dataset
     wx.navigateTo({
-      url: `/pages/source-detail/source-detail?path=${encodeURIComponent(path)}&title=${encodeURIComponent(title)}`
+      url: "/pages/source-detail/source-detail?path=" + encodeURIComponent(path) + "&title=" + encodeURIComponent(title)
     })
   }
 })

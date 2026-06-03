@@ -1,16 +1,25 @@
-﻿{
-  "description": "ii 法律助手 - 合同审查与AI法律咨询",
-  "packOptions": { "ignore": [] },
+{
   "setting": {
-    "urlCheck": false,
     "es6": true,
     "postcss": true,
     "minified": true,
-    "newFeature": true
+    "uglifyFileName": false,
+    "enhance": true,
+    "packNpmRelationList": [],
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    },
+    "useCompilerPlugins": false,
+    "minifyWXML": true
   },
   "compileType": "miniprogram",
-  "libVersion": "3.3.4",
-  "appid": "YOUR_WECHAT_APPID",
-  "projectname": "ii-legal-agent",
-  "condition": {}
+  "simulatorPluginLibVersion": {},
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
+  "appid": "wx879bda289611c4ee",
+  "editorSetting": {}
 }

@@ -1,4 +1,4 @@
-﻿.tpl-list { padding: 0 24rpx; }
+.tpl-list { padding: 0 24rpx; }
 .tpl-card { display: flex; align-items: center; gap: 20rpx; margin: 0 0 16rpx 0; }
 .tpl-card:active { background: #f9fafb; }
 .tpl-icon { font-size: 48rpx; }
