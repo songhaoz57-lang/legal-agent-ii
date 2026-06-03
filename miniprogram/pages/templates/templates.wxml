@@ -1,0 +1,18 @@
+﻿<!-- 合同模板 -->
+<view class="page">
+  <view wx:if="{{templates.length === 0}}" class="empty-state">
+    <view class="icon">📋</view>
+    <view class="text">{{loading ? '加载中...' : '暂无模板'}}</view>
+  </view>
+
+  <view class="tpl-list">
+    <view class="tpl-card card" wx:for="{{templates}}" wx:key="id" bindtap="selectTemplate" data-id="{{item.id}}" data-name="{{item.name}}">
+      <view class="tpl-icon">{{item.icon || '📄'}}</view>
+      <view class="tpl-info">
+        <view class="tpl-name">{{item.name}}</view>
+        <view class="tpl-desc">{{item.description || '标准合同模板'}}</view>
+      </view>
+      <view class="tpl-arrow">→</view>
+    </view>
+  </view>
+</view>

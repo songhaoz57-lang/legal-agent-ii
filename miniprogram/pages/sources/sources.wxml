@@ -1,0 +1,28 @@
+﻿<!-- 法律知识库 -->
+<view class="page">
+  <!-- 搜索框 -->
+  <view class="search-bar">
+    <input class="search-input" placeholder="搜索法律法规..." value="{{keyword}}" bindinput="onSearch" />
+  </view>
+
+  <!-- 分类标签 -->
+  <scroll-view class="cat-scroll" scroll-x>
+    <view class="cat-tag {{activeCat === '' ? 'active' : ''}}" bindtap="filterCat" data-cat="">全部</view>
+    <view class="cat-tag {{activeCat === cat}}" wx:for="{{categories}}" wx:key="*this" bindtap="filterCat" data-cat="{{item}}">{{item}}</view>
+  </scroll-view>
+
+  <!-- 法条列表 -->
+  <view wx:if="{{filteredSources.length === 0}}" class="empty-state">
+    <view class="icon">📚</view>
+    <view class="text">{{keyword ? '未找到匹配内容' : '加载中...'}}</view>
+  </view>
+
+  <view class="source-list">
+    <view class="source-item" wx:for="{{filteredSources}}" wx:key="path" bindtap="openDetail" data-path="{{item.path}}" data-title="{{item.title}}">
+      <view class="source-title">{{item.title}}</view>
+      <view class="source-meta">
+        <text class="source-cat">{{item.category || '法律法规'}}</text>
+      </view>
+    </view>
+  </view>
+</view>

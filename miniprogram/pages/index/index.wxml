@@ -1,0 +1,50 @@
+﻿<!-- 合同审查 -->
+<view class="page">
+  <!-- 上传区域 -->
+  <view class="card upload-card" bindtap="chooseFile">
+    <view class="upload-icon">📄</view>
+    <view class="upload-title">点击上传合同文件</view>
+    <view class="upload-hint">支持 .docx / .doc / .txt / .pdf</view>
+    <view class="upload-file" wx:if="{{fileName}}">{{fileName}}</view>
+  </view>
+
+  <!-- 审查结果 -->
+  <view class="card result-card" wx:if="{{reviewing || result}}">
+    <view class="card-header">
+      <text class="card-title">🔍 审查结果</text>
+    </view>
+
+    <!-- 加载中 -->
+    <view wx:if="{{reviewing}}" class="loading">
+      <text>正在审查合同内容...</text>
+    </view>
+
+    <!-- 结果 -->
+    <block wx:if="{{result && !reviewing}}">
+      <!-- 风险评分 -->
+      <view class="score-section">
+        <view class="score-label">风险评分</view>
+        <view class="score-bar-bg">
+          <view class="score-bar-fill {{result.score >= 70 ? 'high' : result.score >= 40 ? 'mid' : 'low'}}" style="width:{{result.score}}%"></view>
+        </view>
+        <view class="score-num {{result.score >= 70 ? 'high' : result.score >= 40 ? 'mid' : 'low'}}">{{result.score}}%</view>
+      </view>
+
+      <!-- 风险列表 -->
+      <view class="section" wx:if="{{result.risks.length > 0}}">
+        <view class="section-title">⚠️ 风险条款 ({{result.risks.length}})</view>
+        <view class="risk-item" wx:for="{{result.risks}}" wx:key="idx">
+          <view class="risk-tag tag-{{item.level}}">{{item.level === 'high' ? '高风险' : item.level === 'mid' ? '中风险' : '低风险'}}</view>
+          <view class="risk-clause">{{item.clause}}</view>
+          <view class="risk-desc">{{item.description}}</view>
+        </view>
+      </view>
+
+      <!-- 缺失条款 -->
+      <view class="section" wx:if="{{result.missing.length > 0}}">
+        <view class="section-title">📋 缺失条款 ({{result.missing.length}})</view>
+        <view class="missing-item" wx:for="{{result.missing}}" wx:key="*this">{{item}}</view>
+      </view>
+    </block>
+  </view>
+</view>

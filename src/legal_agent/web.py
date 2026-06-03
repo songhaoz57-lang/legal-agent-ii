@@ -8,6 +8,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, UploadFile, Form, Request, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 
 from legal_agent.agent import ask_legal_agent, build_agent
@@ -29,6 +30,15 @@ from legal_agent.payment import (
 load_dotenv(override=True)
 
 app = FastAPI(title="Legal Agent - ii Contract Review")
+
+# CORS - allow WeChat Mini Program and any frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 SRC_DIR = Path(__file__).resolve().parent
 

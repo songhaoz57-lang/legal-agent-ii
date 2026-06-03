@@ -1,0 +1,13 @@
+﻿<view class="page">
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+  <view wx:elif="{{error}}" class="empty-state">
+    <view class="icon">😕</view>
+    <view class="text">{{error}}</view>
+  </view>
+  <view wx:else class="content-card card">
+    <view class="content-title">{{title}}</view>
+    <view class="content-body">
+      <rich-text nodes="{{htmlContent}}"></rich-text>
+    </view>
+  </view>
+</view>

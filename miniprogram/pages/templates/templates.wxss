@@ -1,0 +1,8 @@
+﻿.tpl-list { padding: 0 24rpx; }
+.tpl-card { display: flex; align-items: center; gap: 20rpx; margin: 0 0 16rpx 0; }
+.tpl-card:active { background: #f9fafb; }
+.tpl-icon { font-size: 48rpx; }
+.tpl-info { flex: 1; }
+.tpl-name { font-size: 30rpx; font-weight: 500; }
+.tpl-desc { font-size: 24rpx; color: #9ca3af; margin-top: 4rpx; }
+.tpl-arrow { font-size: 32rpx; color: #d1d5db; }

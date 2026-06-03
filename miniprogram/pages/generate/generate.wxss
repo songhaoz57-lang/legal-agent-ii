@@ -1,0 +1,23 @@
+﻿.tpl-name { font-size: 34rpx; font-weight: 600; }
+.tpl-hint { font-size: 26rpx; color: #9ca3af; margin-top: 8rpx; }
+
+.form-card { margin-top: 0; }
+.form-group { margin-bottom: 24rpx; }
+.form-label { font-size: 28rpx; font-weight: 500; color: #374151; margin-bottom: 8rpx; }
+.form-input {
+  width: 100%; height: 80rpx;
+  background: #f3f4f6; border-radius: 12rpx;
+  padding: 0 24rpx; font-size: 28rpx;
+  box-sizing: border-box;
+}
+.btn-primary { margin-top: 16rpx; width: 100%; }
+
+.result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20rpx; }
+.result-title { font-size: 30rpx; font-weight: 600; }
+.copy-btn { padding: 12rpx 28rpx; font-size: 24rpx; }
+
+.result-body {
+  background: #f9fafb; border-radius: 12rpx;
+  padding: 24rpx; font-size: 28rpx; line-height: 1.8;
+  max-height: 800rpx; overflow-y: auto; white-space: pre-wrap; word-break: break-all;
+}
